@@ -7,19 +7,18 @@
 
 import SwiftUI
 
-struct YugiohCardEffectView: View {
-    @State var fromAnimationProgress: CGFloat = -1
-    @State var toAnimationProgress: CGFloat = 0
-    @State var cardAngle: Angle = .degrees(-90)
-    @State var topLineConfigs: [LineConfig] = []
-    @State var leadingLineConfigs: [LineConfig] = []
-    @State var trailingLineConfigs: [LineConfig] = []
+public struct YugiohCardEffectView: View {
 
+    @State private var controller: YugiohCardEffectController
     private let lineWidth: CGFloat = 10
     private let cardWidthRatio: CGFloat = 0.6
     private let cardHeightRatio: CGFloat = CardView.cardSize.height / CardView.cardSize.width
 
-    var body: some View {
+    public init(controller: YugiohCardEffectController) {
+        self.controller = controller
+    }
+
+    public var body: some View {
         GeometryReader { proxy in
             let cardWidth = proxy.size.width * cardWidthRatio
             ZStack(alignment: .center) {
@@ -27,26 +26,30 @@ struct YugiohCardEffectView: View {
                 LineEffectColorView()
                     .mask {
                         LineEffectView(
-                            topLineConfigs: topLineConfigs,
-                            leadingLineConfigs: leadingLineConfigs,
-                            trailingLineConfigs: trailingLineConfigs,
+                            topLineConfigs: controller.topLineConfigs,
+                            leadingLineConfigs: controller.leadingLineConfigs,
+                            trailingLineConfigs: controller.trailingLineConfigs,
                             cardSize: .init(
                                 width: cardWidth,
                                 height: cardWidth * cardHeightRatio
                             ),
-                            fromAnimationProgress: $fromAnimationProgress,
-                            toAnimationProgress: $toAnimationProgress
+                            fromAnimationProgress: $controller.fromAnimationProgress,
+                            toAnimationProgress: $controller.toAnimationProgress
                         )
                     }
                     .frame(width: proxy.size.width)
                 topEdgeView(parentSize: proxy.size)
-                CardView(card: .sample)
-                    .frame(width: cardWidth, alignment: .center)
-                    .rotation3DEffect(cardAngle, axis: (1 ,0, 0), anchor: .bottom, perspective: 0.6)
+                    if let cardModel = controller.selectedCardModel {
+                        CardView(card: cardModel)
+                            .frame(width: cardWidth, alignment: .center)
+                            .rotation3DEffect(controller.cardAngle, axis: (1 ,0, 0), anchor: .bottom, perspective: 0.6)
+                    }
                 VStack {
                     Spacer()
                     Button {
-                        startEffectAnimation()
+                        Task {
+                            await controller.startEffectAnimation()
+                        }
                     } label: {
                         Text("Summon")
                             .font(.system(size: 32, weight: .medium))
@@ -97,26 +100,6 @@ private extension YugiohCardEffectView {
     }
 }
 
-private extension YugiohCardEffectView {
-    func startEffectAnimation() {
-        topLineConfigs = LineConfig.randomConfigss(count: 7, isTop: true)
-        leadingLineConfigs = LineConfig.randomConfigss(count: 10)
-        trailingLineConfigs = LineConfig.randomConfigss(count: 10)
-        cardAngle = .degrees(-90)
-
-        fromAnimationProgress = -1
-        toAnimationProgress = 0
-        withAnimation(.linear(duration: 0.5)) {
-            cardAngle = .degrees(0)
-        } completion: {
-            withAnimation(.linear(duration: 0.3)) {
-                fromAnimationProgress = 1
-                toAnimationProgress = 2
-            }
-        }
-    }
-}
-
 #Preview {
-    YugiohCardEffectView()
+    YugiohCardEffectView(controller: .init(cardModels: [.sample, .sample2]))
 }

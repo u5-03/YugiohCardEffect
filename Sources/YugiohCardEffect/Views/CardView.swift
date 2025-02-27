@@ -52,7 +52,7 @@ private extension CardView {
             .padding(.vertical, 8)
             HStack(spacing: 0) {
                 Spacer()
-                Color(hex: "F2DBA0")
+                card.imageBackgroundColor
                     .aspectRatio(1, contentMode: .fill)
                     .border(Color(hex: "223B4B"), width: 4)
                     .overlay {
@@ -200,6 +200,6 @@ private extension CardView {
 }
 
 #Preview {
-    CardView(card: .sample)
+    CardView(card: .sample2)
         .frame(width: 300)
 }
