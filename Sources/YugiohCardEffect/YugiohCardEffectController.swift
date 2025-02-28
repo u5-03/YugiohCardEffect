@@ -20,7 +20,6 @@ public class YugiohCardEffectController {
         if selectedIndex + 1 > cardModels.count || selectedIndex < 0 {
             return nil
         }
-        print("selectedIndex: \(selectedIndex), count: \(cardModels.count)")
         return cardModels[selectedIndex]
     }
     private var selectedIndex = -1

@@ -8,10 +8,16 @@
 import SwiftUI
 
 public struct CardView: View {
-    public let card: CardModel
-    static let cardAspectRatio: CGFloat = 59 / 86
+    static var cardAspectRatio: CGFloat {
+        cardSize.width / cardSize.height
+    }
+    static var cardAspectVerticalRatio: CGFloat {
+        cardSize.height / cardSize.width
+    }
     static let cardSize: CGSize = .init(width: 590, height: 860)
     private let cardImageVerticalRatio: CGFloat = 0.65 / 11.5
+    @State private var gradientHolographicProgressRatio: CGFloat = 0
+    private let card: CardModel
 
     public init(card: CardModel) {
         self.card = card
@@ -19,25 +25,41 @@ public struct CardView: View {
 
     public var body: some View {
         GeometryReader { proxy in
-            Group {
-                ZStack {
-                    Color(hex: "4D5E7C")
-                    ZStack {
-                        paperTextureView
-                        cardContentView
-                    }
-                    .padding(10)
-                }
+            if card.isRare {
+                cardBaseView(parentSize: proxy.size)
+                    .gradientHolographicEffect(locationRatioX: gradientHolographicProgressRatio)
+                    .clipShape(RoundedRectangle(cornerRadius: 1))
+            } else {
+                cardBaseView(parentSize: proxy.size)
             }
-            .aspectRatio(CardView.cardAspectRatio, contentMode: .fit)
-            .frame(width: CardView.cardSize.width, height: CardView.cardSize.height)
-            .scaleEffect(scale(for: proxy.size), anchor: .center)
-            .frame(width: proxy.size.width, height: proxy.size.height)
+        }
+        .aspectRatio(CardView.cardAspectRatio, contentMode: .fit)
+        .onAppear {
+            withAnimation(.linear(duration: 3).repeatForever()) {
+                gradientHolographicProgressRatio = 1
+            }
         }
     }
 }
 
 private extension CardView {
+    func cardBaseView(parentSize: CGSize) -> some View {
+        Group {
+            ZStack {
+                Color(hex: "4D5E7C")
+                ZStack {
+                    paperTextureView
+                    cardContentView
+                }
+                .padding(10)
+            }
+        }
+        .aspectRatio(CardView.cardAspectRatio, contentMode: .fit)
+        .frame(width: CardView.cardSize.width, height: CardView.cardSize.height)
+        .scaleEffect(scale(for: parentSize), anchor: .center)
+        .frame(width: parentSize.width, height: parentSize.height)
+    }
+
     var cardContentView: some View {
         VStack(alignment: .leading, spacing: 0) {
             cardTitle
@@ -94,6 +116,7 @@ private extension CardView {
             HStack {
                 Text(card.name)
                     .font(.system(size: 28, weight: .medium))
+                    .shine(card.isRare ? .gold : .none)
                 Spacer()
                 Circle()
                     .fill(
@@ -201,5 +224,4 @@ private extension CardView {
 
 #Preview {
     CardView(card: .sample2)
-        .frame(width: 300)
 }

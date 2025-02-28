@@ -20,7 +20,7 @@ public struct YugiohCardEffectView: View {
 
     public var body: some View {
         GeometryReader { proxy in
-            let cardWidth = proxy.size.width * cardWidthRatio
+            let cardWidth = min(proxy.size.width, proxy.size.height) * cardWidthRatio
             ZStack(alignment: .center) {
                 frameView(parentSize: proxy.size)
                 LineEffectColorView()
@@ -41,8 +41,9 @@ public struct YugiohCardEffectView: View {
                 topEdgeView(parentSize: proxy.size)
                     if let cardModel = controller.selectedCardModel {
                         CardView(card: cardModel)
-                            .frame(width: cardWidth, alignment: .center)
+                            .frame(width: cardWidth, height: cardWidth * CardView.cardAspectVerticalRatio, alignment: .center)
                             .rotation3DEffect(controller.cardAngle, axis: (1 ,0, 0), anchor: .bottom, perspective: 0.6)
+                            .id(cardModel.id)
                     }
                 VStack {
                     Spacer()
@@ -70,31 +71,35 @@ public struct YugiohCardEffectView: View {
 
 private extension YugiohCardEffectView {
     func frameView(parentSize: CGSize) -> some View {
+        let minLength = min(parentSize.width, parentSize.height)
+        let maxLength = max(parentSize.width, parentSize.height)
         return ZStack(alignment: .center) {
             Rectangle()
                 .foregroundStyle(.black)
-                .frame(width: lineWidth, height: parentSize.height)
-                .offset(x: -parentSize.width * 0.4)
+                .frame(width: lineWidth, height: maxLength)
+                .offset(x: -minLength * 0.4)
             Rectangle()
                 .foregroundStyle(.black)
-                .frame(width: lineWidth, height: parentSize.height)
-                .offset(x: parentSize.width * 0.4)
+                .frame(width: lineWidth, height: maxLength)
+                .offset(x: minLength * 0.4)
             Rectangle()
                 .foregroundStyle(.black)
-                .frame(width: parentSize.width, height: lineWidth)
-                .offset(y: parentSize.width * cardWidthRatio * cardHeightRatio / 2 + parentSize.height * 0.1)
+                .frame(width: minLength, height: lineWidth)
+                .offset(y: minLength * cardWidthRatio * cardHeightRatio / 2 + maxLength * 0.1)
             Rectangle()
                 .foregroundStyle(.black)
-                .frame(width: parentSize.width, height: lineWidth)
-                .offset(y: -(parentSize.width * cardWidthRatio * cardHeightRatio / 2 + parentSize.height * 0.1))
+                .frame(width: minLength, height: lineWidth)
+                .offset(y: -(minLength * cardWidthRatio * cardHeightRatio / 2 + maxLength * 0.1))
         }
         .frame(width: parentSize.width, height: parentSize.height)
     }
 
     func topEdgeView(parentSize: CGSize) -> some View{
+        let minLength = min(parentSize.width, parentSize.height)
+        let maxLength = max(parentSize.width, parentSize.height)
         return VStack {
             Color.red.brightness(0.2)
-                .frame(height: parentSize.height / 2 - (parentSize.width * cardWidthRatio * cardHeightRatio / 2 + parentSize.height * 0.1) + lineWidth / 2, alignment: .top)
+                .frame(height: maxLength / 2 - (minLength * cardWidthRatio * cardHeightRatio / 2 + maxLength * 0.1) + lineWidth / 2, alignment: .top)
             Spacer()
         }
     }

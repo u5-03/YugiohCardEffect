@@ -11,7 +11,7 @@ struct LineEffectView: View {
 
     @Binding var fromAnimationProgress: CGFloat
     @Binding var toAnimationProgress: CGFloat
-    private let lineWidth: CGFloat = 4
+    private let lineWidth: CGFloat = 6
 
     var body: some View {
         GeometryReader { proxy in
