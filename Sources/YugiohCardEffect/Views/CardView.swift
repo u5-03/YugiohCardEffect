@@ -91,6 +91,7 @@ private extension CardView {
             HStack {
                 Text(card.id.uuidString)
                     .font(.system(size: 12))
+                    .foregroundStyle(.black)
                 Spacer()
             }
             .padding(.horizontal)
@@ -163,8 +164,10 @@ private extension CardView {
         VStack(alignment: .leading, spacing: 2) {
             Text("【\(card.species)族】")
                 .font(.system(size: 20))
+                .foregroundStyle(.black)
             Text(card.description)
                 .font(.system(size: 16))
+                .foregroundStyle(.black)
                 .lineLimit(nil)
                 .padding(.horizontal, 6)
                 .frame(maxHeight: .infinity, alignment: .top)
@@ -175,8 +178,10 @@ private extension CardView {
                 Spacer()
                 Text("ATK/\(String(card.attackPoint))")
                     .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(.black)
                 Text("DEF/\(String(card.defencePoint))")
                     .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(.black)
             }
         }
         .padding(4)

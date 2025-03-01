@@ -29,6 +29,7 @@ public enum ImageType: Sendable {
             AnyView(
                 shape
                     .stroke(lineWidth: 4)
+                    .foregroundStyle(.black)
             )
         }
     }
