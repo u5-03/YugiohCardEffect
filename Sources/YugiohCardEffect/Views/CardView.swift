@@ -135,7 +135,7 @@ private extension CardView {
                     .stroke(.white.opacity(0.5))
                     .frame(height: 50)
                     .overlay {
-                        Text(card.arrtibute)
+                        Text(card.attribute)
                             .font(.system(size: 28, weight: .medium))
                             .foregroundStyle(.white)
                     }
@@ -167,7 +167,7 @@ private extension CardView {
                 .font(.system(size: 16))
                 .lineLimit(nil)
                 .padding(.horizontal, 6)
-            Spacer()
+                .frame(maxHeight: .infinity, alignment: .top)
             Rectangle()
                 .foregroundStyle(.black)
                 .frame(height: 1)
@@ -223,5 +223,5 @@ private extension CardView {
 }
 
 #Preview {
-    CardView(card: .sample2)
+    CardView(card: .sample)
 }

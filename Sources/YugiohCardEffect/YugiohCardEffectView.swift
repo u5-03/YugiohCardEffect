@@ -11,7 +11,9 @@ public struct YugiohCardEffectView: View {
 
     @State private var controller: YugiohCardEffectController
     private let lineWidth: CGFloat = 10
-    private let cardWidthRatio: CGFloat = 0.6
+    private let topEdgeRatio: CGFloat = 0.1
+    private let cardHorizontalPaddingRatio: CGFloat = 0.1
+    private let cardVerticalPaddingRatio: CGFloat = 0.3
     private let cardHeightRatio: CGFloat = CardView.cardSize.height / CardView.cardSize.width
 
     public init(controller: YugiohCardEffectController) {
@@ -20,7 +22,10 @@ public struct YugiohCardEffectView: View {
 
     public var body: some View {
         GeometryReader { proxy in
-            let cardWidth = min(proxy.size.width, proxy.size.height) * cardWidthRatio
+            let cardAreaHeight = proxy.size.height * (0.5 - cardVerticalPaddingRatio) * 2
+            let cardAreaWidth = proxy.size.width * (0.5 - cardHorizontalPaddingRatio) * 2
+            let cardWidth = min(cardAreaHeight, cardAreaWidth)
+            * 0.9
             ZStack(alignment: .center) {
                 frameView(parentSize: proxy.size)
                 LineEffectColorView()
@@ -45,22 +50,25 @@ public struct YugiohCardEffectView: View {
                             .rotation3DEffect(controller.cardAngle, axis: (1 ,0, 0), anchor: .bottom, perspective: 0.6)
                             .id(cardModel.id)
                     }
-                VStack {
+                VStack(alignment: .trailing) {
                     Spacer()
-                    Button {
-                        Task {
-                            await controller.startEffectAnimation()
+                    HStack {
+                        Spacer()
+                        Button {
+                            Task {
+                                await controller.startEffectAnimation()
+                            }
+                        } label: {
+                            Text("召喚")
+                                .font(.system(size: 32, weight: .medium))
+                                .padding()
                         }
-                    } label: {
-                        Text("Summon")
-                            .font(.system(size: 32, weight: .medium))
-                            .padding(.horizontal, 100)
+                        .buttonStyle(.borderedProminent)
+                        .clipShape(Circle())
                     }
-                    .buttonStyle(.borderedProminent)
-                    .clipShape(Capsule())
                 }
                 .padding(.bottom, 20)
-                .safeAreaPadding(.bottom)
+                .safeAreaPadding([.bottom, .trailing])
             }
             .background(Color(hex: "314446"))
             .frame(width: proxy.size.width)
@@ -71,35 +79,35 @@ public struct YugiohCardEffectView: View {
 
 private extension YugiohCardEffectView {
     func frameView(parentSize: CGSize) -> some View {
-        let minLength = min(parentSize.width, parentSize.height)
         let maxLength = max(parentSize.width, parentSize.height)
+        let height = parentSize.height
+        let width = parentSize.width
         return ZStack(alignment: .center) {
             Rectangle()
                 .foregroundStyle(.black)
                 .frame(width: lineWidth, height: maxLength)
-                .offset(x: -minLength * 0.4)
+                .offset(x: -width * (0.5 - cardHorizontalPaddingRatio))
             Rectangle()
                 .foregroundStyle(.black)
                 .frame(width: lineWidth, height: maxLength)
-                .offset(x: minLength * 0.4)
+                .offset(x: width * (0.5 - cardHorizontalPaddingRatio))
             Rectangle()
                 .foregroundStyle(.black)
-                .frame(width: minLength, height: lineWidth)
-                .offset(y: minLength * cardWidthRatio * cardHeightRatio / 2 + maxLength * 0.1)
+                .frame(width: maxLength, height: lineWidth)
+                .offset(y: height * cardVerticalPaddingRatio)
             Rectangle()
                 .foregroundStyle(.black)
-                .frame(width: minLength, height: lineWidth)
-                .offset(y: -(minLength * cardWidthRatio * cardHeightRatio / 2 + maxLength * 0.1))
+                .frame(width: maxLength, height: lineWidth)
+                .offset(y: -(height * cardVerticalPaddingRatio))
         }
         .frame(width: parentSize.width, height: parentSize.height)
     }
 
     func topEdgeView(parentSize: CGSize) -> some View{
         let minLength = min(parentSize.width, parentSize.height)
-        let maxLength = max(parentSize.width, parentSize.height)
         return VStack {
             Color.red.brightness(0.2)
-                .frame(height: maxLength / 2 - (minLength * cardWidthRatio * cardHeightRatio / 2 + maxLength * 0.1) + lineWidth / 2, alignment: .top)
+                .frame(height: minLength * topEdgeRatio + lineWidth / 2, alignment: .top)
             Spacer()
         }
     }

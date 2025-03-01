@@ -37,7 +37,7 @@ public enum ImageType: Sendable {
 public struct CardModel : Sendable {
     public let id: UUID
     public let name: String
-    public let arrtibute: String
+    public let attribute: String
     public let starCount: Int
     public let imageType: ImageType
     public let imageBackgroundColor: Color
@@ -47,10 +47,10 @@ public struct CardModel : Sendable {
     public let defencePoint: Int
     public let isRare: Bool
 
-    public init(name: String, arrtibute: String, starCount: Int, imageType: ImageType, imageBackgroundColor: Color, species: String, description: String, attackPoint: Int, defencePoint: Int, isRare: Bool = false) {
+    public init(name: String, attribute: String, starCount: Int, imageType: ImageType, imageBackgroundColor: Color, species: String, description: String, attackPoint: Int, defencePoint: Int, isRare: Bool = false) {
         self.id = UUID()
         self.name = name
-        self.arrtibute = arrtibute
+        self.attribute = attribute
         self.starCount = starCount
         self.imageType = imageType
         self.imageBackgroundColor = imageBackgroundColor
@@ -63,8 +63,8 @@ public struct CardModel : Sendable {
 
     public static let sample: CardModel = .init(
         name: "Sugiy - あんこフォルム",
-        arrtibute: "甘",
-        starCount: 5,
+        attribute: "甘",
+        starCount: 4,
         imageType: .shape(shape: SugiyShape(), aspectRatio: 974 / 648),
         imageBackgroundColor: Color(hex: "F2DBA0"),
         species: "甘党",
@@ -75,12 +75,12 @@ public struct CardModel : Sendable {
 
     public static let sample2: CardModel = .init(
         name: "デスマーチ明けのSugiy",
-        arrtibute: "甘",
+        attribute: "甘",
         starCount: 8,
         imageType: .image(image: .init(.sugiy), aspectRatio: 1),
         imageBackgroundColor: Color.white,
         species: "甘党",
-        description: "「残業月80時間」の装備カードを装備した「Sugiy - あんこフォルム」をリリースした場合のみ特殊召喚できる。デスマーチの修羅場をくぐり抜けて無敵の状態。手札の「エナジードリンク」のカードを捨てることでこのカードを破壊・除外する魔法・罠・モンスターの効果を無効にして、破壊することができる。",
+        description: "「残業月80時間」の装備カードを装備した「Sugiy - あんこフォルム」をリリースした場合のみ特殊召喚できる。修羅場をくぐり抜けた無敵の状態。手札の「エナジードリンク」のカードを捨てることでこのカードを破壊・除外する魔法・罠・モンスターの効果を無効にして、破壊することができる。",
         attackPoint: 4500,
         defencePoint: 3000,
         isRare: true

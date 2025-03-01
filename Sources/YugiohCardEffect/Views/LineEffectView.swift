@@ -11,10 +11,10 @@ struct LineEffectView: View {
 
     @Binding var fromAnimationProgress: CGFloat
     @Binding var toAnimationProgress: CGFloat
-    private let lineWidth: CGFloat = 6
 
     var body: some View {
         GeometryReader { proxy in
+            let dynamicLineWidth = min(proxy.size.width, proxy.size.height)  * 0.008
             // スタート枠の寸法：画面幅の1/3、アスペクト比8.6:5.9
             let frameWidth = cardSize.width
             let frameHeight = cardSize.height
@@ -86,7 +86,7 @@ struct LineEffectView: View {
                             lateralBound: frameWidth
                         )
                     )
-                    .stroke(Color.red.opacity(0.6), lineWidth: lineWidth)
+                    .stroke(Color.red.opacity(0.6), lineWidth: dynamicLineWidth)
                 }
 
                 // 左方向の線
@@ -108,7 +108,7 @@ struct LineEffectView: View {
                             lateralBound: frameWidth
                         )
                     )
-                    .stroke(Color.red.opacity(0.6), lineWidth: lineWidth)
+                    .stroke(Color.red.opacity(0.6), lineWidth: dynamicLineWidth)
                 }
 
                 // 右方向の線
@@ -130,7 +130,7 @@ struct LineEffectView: View {
                             lateralBound: frameWidth
                         )
                     )
-                    .stroke(Color.red.opacity(0.6), lineWidth: lineWidth)
+                    .stroke(Color.red.opacity(0.6), lineWidth: dynamicLineWidth)
                 }
             }
         }
